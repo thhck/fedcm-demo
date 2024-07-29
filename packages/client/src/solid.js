@@ -39,19 +39,21 @@ export async function startFedcmLogin(cssUrl) {
   const dpopKey = await generateDpopKeyPair();
   const tokenUrl = `${cssUrl}.oidc/token`;
   const dpopHeader = await createDpopHeader(tokenUrl, 'POST', dpopKey);
+  const cliendId = window.location.origin + '/clientid'
 
   const identity_registered = {
     "providers": [
       {
         "configURL": `any`,
-        "clientId": `https://localhost:6080/clientid`,
-        "nonce": `${dpopHeader}`,
+        "clientId": `${cliendId}`,
         "registered": true,
-        "grant type": "webid"
+        "grant type": "webid",
+        "nonce": `${dpopHeader}`
       }
     ]
   }
-  console.log('requesting navigator\'s API..')
+  console.log('requesting navigator\'s API with: ', identity_registered)
+	
   try {
     const access_token = await navigator.credentials.get({
       identity: identity_registered
